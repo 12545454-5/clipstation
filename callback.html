@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Conexión con TikTok — ClipStation</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <a class="logo" href="./">Clip<span>Station</span></a>
+  <nav>
+    <a href="./">Inicio</a>
+    <a href="privacidad.html">Política de privacidad</a>
+    <a href="terminos.html">Términos de servicio</a>
+  </nav>
+</header>
+<main>
+  <h1>Conexión con TikTok</h1>
+  <p id="estado" class="lead">Comprobando la respuesta de TikTok…</p>
+  <div id="codigo" hidden>
+    <p>Copia este código y pégalo en ClipStation cuando te lo pida (caduca en unos minutos):</p>
+    <p><span id="valor" class="code"></span></p>
+    <p><button id="copiar" type="button">Copiar código</button></p>
+  </div>
+  <p class="en">TikTok login callback for ClipStation (only used with the "Web" platform; the desktop app receives
+  the code directly on this computer). Nothing is stored on this page.</p>
+</main>
+<footer>
+  <nav>
+    <a href="privacidad.html">Política de privacidad / Privacy Policy</a>
+    <a href="terminos.html">Términos de servicio / Terms of Service</a>
+  </nav>
+  © 2026 ClipStation
+</footer>
+<script>
+  // Página estática: lee ?code=...&state=... que añade TikTok y lo muestra. No envía nada a ningún servidor.
+  (function () {
+    var q = new URLSearchParams(window.location.search);
+    var estado = document.getElementById("estado");
+    if (q.get("error")) {
+      estado.textContent = "TikTok no concedió el permiso: " + (q.get("error_description") || q.get("error"));
+      return;
+    }
+    var code = q.get("code");
+    if (!code) {
+      estado.textContent = "No hay ningún código en esta dirección. Vuelve a iniciar la conexión desde ClipStation.";
+      return;
+    }
+    estado.textContent = "TikTok ha concedido el permiso" + (q.get("scopes") ? " (" + q.get("scopes") + ")" : "") + ".";
+    document.getElementById("valor").textContent = code + (q.get("state") ? "  |  state=" + q.get("state") : "");
+    document.getElementById("codigo").hidden = false;
+    document.getElementById("copiar").addEventListener("click", function () {
+      navigator.clipboard.writeText(code).then(function () {
+        document.getElementById("copiar").textContent = "Copiado";
+      });
+    });
+  })();
+</script>
+</body>
+</html>
